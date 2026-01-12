@@ -22,11 +22,17 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt upgrade
-        sudo apt-get install -y build-essential subversion libncurses5-dev zlib1g-dev gawk gcc-multilib flex git-core gettext libssl-dev unzip 2to3 python2 python-is-python3 python3
+        sudo apt-get install -y build-essential subversion libncurses5-dev zlib1g-dev gawk gcc-multilib flex git-core gettext libssl-dev unzip 2to3 python-is-python3
         sudo timedatectl set-timezone Asia/Shanghai
+
+    - name: Clone OpenWrt source
+      run: |
+        git clone -b openwrt-22.03 https://github.com/openwrt/openwrt.git openwrt-source
+        cd openwrt-source
 
     - name: Update feeds
       run: |
+        cd openwrt-source
         echo "src-git packages https://mirrors.tuna.tsinghua.edu.cn/openwrt/packages.git"
         echo "src-git luci https://mirrors.tuna.tsinghua.edu.cn/openwrt/luci.git"
         echo "src-git routing https://mirrors.tuna.tsinghua.edu.cn/openwrt/routing.git"
@@ -45,6 +51,7 @@ jobs:
 
     - name: Configure TP842NV3 device
       run: |
+        cd openwrt-source
         cat > .config << 'EOF'
         CONFIG_TARGET_ath79=y
         CONFIG_TARGET_ath79_generic=y
@@ -55,6 +62,7 @@ jobs:
 
     - name: Configure packages
       run: |
+        cd openwrt-source
         cat >> .config << 'EOF'
         # CUPS打印服务
         CONFIG_PACKAGE_cups=y
@@ -103,6 +111,7 @@ jobs:
 
     - name: Customize configuration
       run: |
+        cd openwrt-source
         cat >> .config << 'EOF'
         # 系统配置
         CONFIG_HOSTNAME="TP842NV3"
@@ -122,6 +131,7 @@ jobs:
 
     - name: Build firmware
       run: |
+        cd openwrt-source
         make defconfig
         make download -j8
         make -j$(nproc)
@@ -129,7 +139,7 @@ jobs:
     - name: Prepare output
       run: |
         mkdir -p firmware
-        cp -f bin/targets/ath79/generic/*.bin firmware/
+        cp -f openwrt-source/bin/targets/ath79/generic/*.bin firmware/
         ls -la firmware/
         echo "Firmware built successfully!"
         echo "BIN files are available in the firmware directory:"
