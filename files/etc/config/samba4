@@ -1,0 +1,25 @@
+config samba
+	option workgroup 'WORKGROUP'
+	option description 'TP842NV3 Print Server'
+	option netbiosname 'THDN-Print'
+	option interfaces 'lan'
+	option security 'user'
+	option passdb backend 'smbpasswd'
+
+config sambashare
+	option name 'print$
+	option path '/usr/share/cups'
+	option read_only 'yes'
+	option guest_ok 'yes'
+	option create_mask '0666'
+	option dir_mask '0777'
+	option browseable 'yes'
+
+config sambashare
+	option name 'printouts'
+	option path '/mnt/printouts'
+	option read_only 'no'
+	option guest_ok 'yes'
+	option create_mask '0666'
+	option dir_mask '0777'
+	option browseable 'yes'

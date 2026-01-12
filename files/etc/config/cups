@@ -1,0 +1,11 @@
+config cups
+	option enabled '1'
+	option port '631'
+	option listen '*:631'
+	option browse '1'
+	option browse_remote '0'
+	option default_printer ''
+	option servername 'TP842NV3 Print Server'
+	option systemgroup 'root'
+	option user 'root'
+	option group 'root'
